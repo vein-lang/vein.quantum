@@ -1,0 +1,36 @@
+#space "vein/lang/quantum"
+
+
+static class Bindings
+{
+    [native("ishtar.quantum", "q_call_init")]
+    extern _init(): raw;
+
+    [native("ishtar.quantum", "q_call_destroy")]
+    extern _destroy(id: raw): void;
+
+    [native("ishtar.quantum", "q_call_allocate")]
+    extern _allocate(id: raw): raw;
+
+    [native("ishtar.quantum", "q_call_allocateQubit")]
+    extern _allocateQubit(id: raw, q: i4): void;
+
+    [native("ishtar.quantum", "q_call_releaseQubit")]
+    extern _releaseQubit(id: raw, q: i4): bool;
+
+    [native("ishtar.quantum", "q_call_num_qubits")]
+    extern _numQubits(id: raw): u16;
+
+    [native("ishtar.quantum", "q_call_rotate_qubit")]
+    extern _rotate(id: raw, b: u16, phi: f32, q: u16): void;
+
+    [native("ishtar.quantum", "q_call_multi_controlled_rotations")]
+    extern _mcr(id: raw, b: u16, phi: f32, nc: u16, c: raw*, q: u16): void;
+
+    [native("ishtar.quantum", "q_call_exp_pauli")]
+    extern _exp(id: raw, n: u16, b: raw*, phi: f32, q: u16*): void;
+
+    [native("ishtar.quantum", "q_call_measurements")]
+    extern _meas(id: raw, q: u16): u16;
+
+}
