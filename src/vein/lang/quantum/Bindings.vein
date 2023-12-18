@@ -3,34 +3,67 @@
 
 static class Bindings
 {
-    [native("ishtar.quantum", "q_call_init")]
-    extern _init(): raw;
+    [native("Microsoft.Quantum.Simulator.Runtime", "init")]
+    extern _init(): u32;
 
-    [native("ishtar.quantum", "q_call_destroy")]
-    extern _destroy(id: raw): void;
+    [native("Microsoft.Quantum.Simulator.Runtime", "destroy")]
+    extern _destroy(id: u32): void;
 
-    [native("ishtar.quantum", "q_call_allocate")]
-    extern _allocate(id: raw): raw;
+    [native("Microsoft.Quantum.Simulator.Runtime", "q_call_allocate")]
+    extern _allocate(id: u32): u32;
 
-    [native("ishtar.quantum", "q_call_allocateQubit")]
-    extern _allocateQubit(id: raw, q: i4): void;
+    [native("Microsoft.Quantum.Simulator.Runtime", "allocateQubit")]
+    extern _allocateQubit(id: u32, q: i4): void;
 
-    [native("ishtar.quantum", "q_call_releaseQubit")]
-    extern _releaseQubit(id: raw, q: i4): bool;
+    [native("Microsoft.Quantum.Simulator.Runtime", "release")]
+    extern _releaseQubit(id: u32, q: i4): bool;
 
-    [native("ishtar.quantum", "q_call_num_qubits")]
-    extern _numQubits(id: raw): u16;
+    [native("Microsoft.Quantum.Simulator.Runtime", "q_call_num_qubits")]
+    extern _numQubits(id: u32): u32;
 
-    [native("ishtar.quantum", "q_call_rotate_qubit")]
-    extern _rotate(id: raw, b: u16, phi: f32, q: u16): void;
+    [native("Microsoft.Quantum.Simulator.Runtime", "q_call_rotate_qubit")]
+    extern _rotate(id: u32, b: u32, phi: f32, q: u32): void;
 
-    [native("ishtar.quantum", "q_call_multi_controlled_rotations")]
-    extern _mcr(id: raw, b: u16, phi: f32, nc: u16, c: raw*, q: u16): void;
+    [native("Microsoft.Quantum.Simulator.Runtime", "q_call_multi_controlled_rotations")]
+    extern _mcr(id: u32, b: u32, phi: f32, nc: u32, c: raw*, q: u32): void;
 
-    [native("ishtar.quantum", "q_call_exp_pauli")]
-    extern _exp(id: raw, n: u16, b: raw*, phi: f32, q: u16*): void;
+    [native("Microsoft.Quantum.Simulator.Runtime", "Exp")]
+    extern _exp(id: u32, n: u32, b: raw*, phi: f32, q: u32*): void;
 
-    [native("ishtar.quantum", "q_call_measurements")]
-    extern _meas(id: raw, q: u16): u16;
+    [native("Microsoft.Quantum.Simulator.Runtime", "q_call_measurements")]
+    extern _meas(id: u32, q: u32): u32;
 
+    [native("Microsoft.Quantum.Simulator.Runtime", "seed")]
+    static extern _setSeed(id: u32, seed: u32): void;
+}
+
+
+public class QResult
+{
+
+}
+
+
+public class Operators
+{
+    public operation TeleportMessage(message: bool): QResult
+    {
+        {.qalloc msg}
+        {.qalloc target}
+        {.if message}
+        {.x msg}
+        {.qcall Teleport(msg, target)}
+        {.ret mrz(target) == One}
+    }
+    public operation Teleport(msg: QBit, target: QBit): QResult
+    {
+        {.qalloc reg}
+        {.h reg}
+        {.cnot reg, target}
+        {.h msg}
+        {.if mrz(msg) == One}
+        {.z target}
+        {.if mrz(reg) == One}
+        {.x target}
+    }
 }
